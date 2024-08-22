@@ -6,6 +6,6 @@ export 'usecases/usecase.dart';
 export 'utils/extensions/extensions.dart';
 export 'utils/serializers/serializers.dart';
 export 'constants/hive_keys.dart';
-
+export 'network/network_info.dart';
 
 export 'cache/cache_manager.dart';

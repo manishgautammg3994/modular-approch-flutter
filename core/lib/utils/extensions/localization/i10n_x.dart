@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dependencies/dependencies.dart';
+import 'package:packages/packages.dart';
 
 extension AppLocalizationsX on BuildContext {
   /// APP_LOCALIZATIONS Translations Self Defined in shared/l10n package

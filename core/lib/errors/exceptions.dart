@@ -1,4 +1,4 @@
-import 'package:dependencies/dependencies.dart' show Equatable;
+import 'package:packages/packages.dart' show Equatable;
 
 @Equatable(stringify: true) // stringify for above use case
 final class ServerException implements Exception {}

@@ -1,4 +1,4 @@
-import 'package:dependencies/dependencies.dart';
+import 'package:packages/packages.dart';
 
 import '../errors/failures.dart';
 
