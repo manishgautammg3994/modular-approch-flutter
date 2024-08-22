@@ -1,7 +1,8 @@
 import 'package:packages/packages.dart';
 
-abstract class NetworkInfo {
+abstract interface class NetworkInfo {
   Future<bool> get isConnected;
+  Stream<InternetConnectionStatus> get onStatusChange;
 }
 
 class NetworkInfoImpl implements NetworkInfo {
@@ -11,4 +12,8 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected => connectionChecker.hasConnection;
+
+  @override
+  Stream<InternetConnectionStatus> get onStatusChange =>
+      connectionChecker.onStatusChange;
 }

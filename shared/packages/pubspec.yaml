@@ -19,6 +19,7 @@ dependencies:
   dartz:
   flutter_bloc:
   intl:
+  get_it:
   hive_flutter: ^2.0.0-dev
   l10n:
     path: ../l10n

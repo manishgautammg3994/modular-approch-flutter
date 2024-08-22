@@ -140,6 +140,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "get_it",
+      "rootUri": "file:///home/user/.pub-cache/hosted/pub.dev/get_it-7.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "hive",
       "rootUri": "file:///home/user/.pub-cache/hosted/pub.dev/hive-3.0.0-dev",
       "packageUri": "lib/",
@@ -398,7 +404,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-08-22T15:30:00.652074Z",
+  "generated": "2024-08-22T17:53:40.420918Z",
   "generator": "pub",
   "generatorVersion": "3.5.1",
   "flutterRoot": "file:///home/user/flutter",

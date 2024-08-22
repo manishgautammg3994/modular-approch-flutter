@@ -11,6 +11,6 @@ export 'package:l10n/l10n.dart';
 export 'package:internet_connection_checker/internet_connection_checker.dart';
 // ?# dev_dependencies:
 
-// ? # self 
+// ? # self
 export 'equatable/equatable.dart';
 export 'macros/macros.dart';

@@ -1,7 +1,6 @@
-library components;
+library component;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/atom/atom.dart';
+export 'src/molecule/molecule.dart';
+export 'src/organism/organism.dart';
+export 'src/template/template.dart';

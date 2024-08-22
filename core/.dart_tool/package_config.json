@@ -404,6 +404,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "preferences",
+      "rootUri": "../../shared/preferences",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "provider",
       "rootUri": "file:///home/user/.pub-cache/hosted/pub.dev/provider-6.1.2",
       "packageUri": "lib/",
@@ -518,7 +524,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-08-22T16:09:52.430162Z",
+  "generated": "2024-08-22T17:45:00.365821Z",
   "generator": "pub",
   "generatorVersion": "3.5.1",
   "flutterRoot": "file:///home/user/flutter",
