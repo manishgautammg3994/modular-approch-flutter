@@ -16,7 +16,7 @@ class NetworkInfoFactoryImpl implements NetworkInfoFactory {
     final connectionChecker = InternetConnectionChecker.createInstance(
       customCheckOptions: [
         AddressCheckOption(
-          uri: Uri.parse('${config.baseUrl}/heartbeat'),
+          uri: Uri.parse('${config.baseUrl}'),
           responseStatusFn: (response) {
             return response.statusCode == 404;
           },
