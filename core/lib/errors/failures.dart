@@ -43,7 +43,7 @@
 
 // class NoConnectionFailure extends Failure {}
 
-import 'package:dependencies/dependencies.dart';
+import 'package:packages/packages.dart';
 
 @pragma('antinna:keep-to-string-in-subtypes by remind')
 // TODO: // stringify for above use case //comment this here but apply this in all subtypes

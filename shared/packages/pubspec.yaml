@@ -13,12 +13,14 @@ dependencies:
     sdk: flutter
   _macros:
     sdk: dart
-  # json_annotation:
-  # freezed_annotation:
-  # dartz:
-  # flutter_bloc:
-  # intl:
-  # hive_flutter:
+  internet_connection_checker: 
+  json_annotation:
+  freezed_annotation:
+  dartz:
+  flutter_bloc:
+  intl:
+  get_it:
+  hive_flutter: ^2.0.0-dev
   l10n:
     path: ../l10n
 
