@@ -45,7 +45,7 @@ final class CacheManagerImpl implements CacheManager {
   /// [encrypt] specifies whether to encrypt the stored data.
   /// [encryptKey] is the key used for encryption.
   static Future<CacheManagerImpl> setup({
-    bool encrypt = false,
+    bool encrypt = true,
     String encryptKey = HiveKeys.encryptKey,
   }) async {
     if (_singleton == null) {
