@@ -37,10 +37,7 @@ final class CacheManagerImpl implements CacheManager {
   CacheManagerImpl._();
 
   factory CacheManagerImpl() {
-    if(_singleton == null){ //TODO: Comment just in testing
-      throw "Storage not Initialized try running CacheManagerImpl.setup() in initializer with await";
-
-    }
+// if null then throw error //TODO ADD
     _singleton ??= CacheManagerImpl._();
     return _singleton!;
   }
@@ -56,7 +53,7 @@ final class CacheManagerImpl implements CacheManager {
   }) async {
     config ??= FlavorConfig();
     if (_singleton == null) {
-      Hive.initFlutter();
+    await  Hive.initFlutter(); //here was the error use await
 
       var encryptionKey = config.cacheEncryptKey.codeUnits;
       _box = await Hive.openBox(

@@ -55,9 +55,10 @@ class _MyAppState extends State<MyApp> {
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: CircularProgressIndicator.adaptive(strokeWidth: 1.0,), //No Material // Init Storage failed
-            ); // // TODO: add a seprate Widget no need directionality type because if no memory this is for sure
+            return Placeholder();
+            //   Center(
+            //   child: CircularProgressIndicator.adaptive(strokeWidth: 1.0,), //No Material // Init Storage failed
+            // ); // // TODO: add a seprate Widget no need directionality type because if no memory this is for sure
           }
           return MaterialApp(
             title: 'Flutter Demo',
