@@ -2,7 +2,7 @@ import 'package:components/components.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:preferences/preferences.dart';
-import 'package:packages/packages.dart' hide State;
+import 'package:packages/packages.dart' ;
 
 void main() {
   FlavorConfig config = FlavorConfig(appflavor: "staging");
@@ -29,7 +29,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initializeHive() async {
-    _cacheManager = await CacheManagerImpl.setup();
+    /// always remmber to run [CacheManagerImpl.setup] at very first of program to initialize Local Storage in this case hive
+    _cacheManager = await CacheManagerImpl.setup(
+        // config:config
+    );
     //open box then put in that box also don't forget to close that
   }
 

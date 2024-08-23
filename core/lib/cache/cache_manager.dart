@@ -1,5 +1,6 @@
 import '../constants/hive_keys.dart';
 import 'package:packages/packages.dart';
+import 'package:preferences/preferences.dart';
 
 /// Cache Manager
 /// A simple and efficient interface for persisting and retrieving state changes.
@@ -36,6 +37,10 @@ final class CacheManagerImpl implements CacheManager {
   CacheManagerImpl._();
 
   factory CacheManagerImpl() {
+    if(_singleton == null){ //TODO: Comment just in testing
+      throw "Storage not Initialized try running CacheManagerImpl.setup() in initializer with await";
+
+    }
     _singleton ??= CacheManagerImpl._();
     return _singleton!;
   }
@@ -45,16 +50,19 @@ final class CacheManagerImpl implements CacheManager {
   /// [encrypt] specifies whether to encrypt the stored data.
   /// [encryptKey] is the key used for encryption.
   static Future<CacheManagerImpl> setup({
-    bool encrypt = true,
-    String encryptKey = HiveKeys.encryptKey,
+
+
+    FlavorConfig? config
   }) async {
+    config ??= FlavorConfig();
     if (_singleton == null) {
       Hive.initFlutter();
 
-      var encryptionKey = encryptKey.codeUnits;
+      var encryptionKey = config.cacheEncryptKey.codeUnits;
       _box = await Hive.openBox(
         HiveKeys.globalkey,
-        encryptionCipher: encrypt ? HiveAesCipher(encryptionKey) : null,
+        // ignore: deprecated_member_use
+        encryptionKey: config.iscacheEncrypted ? encryptionKey : null, // i found a bug in  encryptionCipher when it is null , but that can be resolved by using this Depricated Stuff encryptionKey, very usefull
       );
 
       _singleton = CacheManagerImpl._();

@@ -15,5 +15,5 @@ part of '../config.dart';
 final class _DevelopmentFlavorConfig extends FlavorConfig {
   const _DevelopmentFlavorConfig()
       : super._internal(
-            '[DEV] Antinna', 'https://dev.example.com', Flavor.development);
+            '[DEV] Antinna', 'https://dev.example.com', Flavor.development,'AlOp7lBkcFRdJnXFkGcBHwM9I9TJMMgr',true);
 }

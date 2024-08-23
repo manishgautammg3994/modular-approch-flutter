@@ -15,5 +15,5 @@ part of '../config.dart';
 final class _StagingFlavorConfig extends FlavorConfig {
   const _StagingFlavorConfig()
       : super._internal(
-            "[STG] Antinna", 'https://stag.example.com', Flavor.staging);
+            "[STG] Antinna", 'https://stag.example.com', Flavor.staging,'AlOp7lBkcFRdJnXFkGcBHwM9I9TJMMgr',true);
 }
