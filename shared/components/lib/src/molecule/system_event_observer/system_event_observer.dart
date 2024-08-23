@@ -157,7 +157,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
             AsyncSnapshot<connection.InternetConnectionStatus> streamSnapshot,
           ) {
             if (streamSnapshot.connectionState != ConnectionState.active) {
-              return const Center(child:  CircularProgressIndicator(), ); //In Material //checking Internet status
+              return const Center(child:  CircularProgressIndicator(strokeWidth: 6.0,), ); //In Material //checking Internet status
               //TODO: load splash here
             } else {
               final result = streamSnapshot.requireData;

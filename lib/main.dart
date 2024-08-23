@@ -51,12 +51,12 @@ class _MyAppState extends State<MyApp> {
         future: _hiveInitialization,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator()); //No Material // Initing Storage
+            return const Center(child: CircularProgressIndicator(strokeWidth: 10.0,)); //No Material // Initing Storage
           }
 
           if (snapshot.hasError) {
             return Center(
-              child: CircularProgressIndicator.adaptive(), //No Material // Init Storage failed
+              child: CircularProgressIndicator.adaptive(strokeWidth: 8.0,), //No Material // Init Storage failed
             ); // // TODO: add a seprate Widget no need directionality type because if no memory this is for sure
           }
           return MaterialApp(
