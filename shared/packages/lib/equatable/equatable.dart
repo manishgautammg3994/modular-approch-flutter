@@ -1,7 +1,7 @@
 // class Equatable {
 //   const Equatable();
 // }
-import "../packages.dart";
+import "../macros/macros.dart";
 
 import 'dart:async';
 
