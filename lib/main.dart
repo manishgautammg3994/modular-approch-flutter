@@ -2,7 +2,7 @@ import 'package:components/components.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:preferences/preferences.dart';
-import 'package:packages/packages.dart' as p;
+import 'package:packages/packages.dart' hide State;
 
 void main() {
   FlavorConfig config = FlavorConfig(appflavor: "staging");
@@ -48,21 +48,21 @@ class _MyAppState extends State<MyApp> {
         future: _hiveInitialization,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator()); //No Material // Initing Storage
           }
 
           if (snapshot.hasError) {
             return Center(
-              child: CircularProgressIndicator.adaptive(),
+              child: CircularProgressIndicator.adaptive(), //No Material // Init Storage failed
             ); // // TODO: add a seprate Widget no need directionality type because if no memory this is for sure
           }
           return MaterialApp(
             title: 'Flutter Demo',
             localizationsDelegates: const [
-              p.AppLocalizations.delegate,
-              ...p.GlobalMaterialLocalizations.delegates,
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
             ],
-            supportedLocales:  p.AppLocalizations.delegate.supportedLocales,
+            supportedLocales:  AppLocalizations.delegate.supportedLocales,
             theme: ThemeData(
               // This is the theme of your application.
               //

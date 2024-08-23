@@ -1,37 +1,34 @@
-name: l10n
+name: themer
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
+# homepage:
 publish_to: "none"
 
 environment:
   sdk: ^3.5.1
- 
-
+  
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  intl:
-  packages: # just to import intl
-    path: ../packages
+  packages:
+    path: ../../shared/packages
+  core:
+    path: ../../core
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  intl_utils:
+  bloc_test:
+  json_serializable:
+  freezed:
+  build_runner:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-flutter_intl:
-  enabled: true
-  class_name: AppLocalizations
+
 # The following section is specific to Flutter packages.
 flutter:
-  # generate: true
-
 
   # To add assets to your package, add an assets section, like this:
   # assets:

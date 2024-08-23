@@ -157,7 +157,8 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
             AsyncSnapshot<connection.InternetConnectionStatus> streamSnapshot,
           ) {
             if (streamSnapshot.connectionState != ConnectionState.active) {
-              return const CircularProgressIndicator(); //TODO: load splash here
+              return const Center(child:  CircularProgressIndicator(), ); //In Material //checking Internet status
+              //TODO: load splash here
             } else {
               final result = streamSnapshot.requireData;
               return BannerHost(
@@ -206,7 +207,9 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+
     _connectivitySubscription.cancel(); // Dispose the connectivity subscription
+
     super.dispose();
   }
 }

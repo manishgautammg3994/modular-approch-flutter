@@ -37,11 +37,14 @@ dependencies:
     path: shared/preferences
   components:
     path: shared/components
-
   core:
     path: core
 
   # ------------- Feature Module
+  themer:
+    path: features/themer
+  updater:
+    path: features/updater
 
 
   # The following adds the Cupertino Icons font to your application.

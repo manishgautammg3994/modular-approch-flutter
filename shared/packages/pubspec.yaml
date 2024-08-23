@@ -19,7 +19,7 @@ dependencies:
   json_annotation:
   freezed_annotation:
   dartz:
-  # flutter_bloc:
+  flutter_bloc:
   intl:
   get_it:
   hive_flutter: ^2.0.0-dev
