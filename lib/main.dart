@@ -2,6 +2,7 @@ import 'package:components/components.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:preferences/preferences.dart';
+import 'package:packages/packages.dart' as p;
 
 void main() {
   FlavorConfig config = FlavorConfig(appflavor: "staging");
@@ -57,6 +58,11 @@ class _MyAppState extends State<MyApp> {
           }
           return MaterialApp(
             title: 'Flutter Demo',
+            localizationsDelegates: const [
+              p.AppLocalizations.delegate,
+              ...p.GlobalMaterialLocalizations.delegates,
+            ],
+            supportedLocales:  p.AppLocalizations.delegate.supportedLocales,
             theme: ThemeData(
               // This is the theme of your application.
               //
