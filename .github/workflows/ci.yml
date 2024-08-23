@@ -35,10 +35,10 @@ jobs:
           java-version: "17.x"
           # you can change subosito/flutter-action@version as per your choice
       - uses: subosito/flutter-action@v2
-        with:
+        # with:
           # you can change flutter-version: as per subosito/flutter-action@version as per your choice
           # flutter-version: '3.0.0'
-          channel: "master"
+          # channel: "master"
       - run: flutter --version
       - run: flutter pub get
       # you can even build aab or ipa as per your command but remember you need to change the relese code for  artifacts:  directory
