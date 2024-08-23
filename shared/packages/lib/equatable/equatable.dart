@@ -1,7 +1,8 @@
 // class Equatable {
 //   const Equatable();
 // }
-import "../macros/macros.dart";
+// never import any flutter package as ui will cause error
+import "../macros/macros.dart"; //only directive approch no flutter package
 
 import 'dart:async';
 
