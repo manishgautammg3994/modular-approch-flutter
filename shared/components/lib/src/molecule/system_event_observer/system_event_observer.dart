@@ -158,7 +158,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
           ) {
 
             if (streamSnapshot.connectionState != ConnectionState.active) {
-              return const Center(child:  CircularProgressIndicator(strokeWidth: 6.0,), ); //In Material //checking Internet status
+              return Center(child: Text("Loading Connection"), ); //In Material //checking Internet status
               //TODO: load splash here
             } else {
               if(streamSnapshot.hasError){
