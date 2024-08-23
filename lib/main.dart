@@ -1,38 +1,97 @@
+import 'package:components/components.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:preferences/preferences.dart';
 
 void main() {
+  FlavorConfig config = FlavorConfig(appflavor: "staging");
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  late final CacheManager _cacheManager;
+  late final Future<void> _hiveInitialization;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _hiveInitialization = _initializeHive();
+  }
+
+  Future<void> _initializeHive() async {
+    _cacheManager = await CacheManagerImpl.setup();
+    //open box then put in that box also don't forget to close that
+  }
+
+  @override
+  void dispose() {
+    _cacheManager
+        .compact(); //performance stuff file size decrease which incease performance and app runtime size say memory
+    _cacheManager.close();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return FutureBuilder(
+        future: _hiveInitialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: CircularProgressIndicator.adaptive(),
+            ); // // TODO: add a seprate Widget no need directionality type because if no memory this is for sure
+          }
+          return MaterialApp(
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              // This is the theme of your application.
+              //
+              // TRY THIS: Try running your application with "flutter run". You'll see
+              // the application has a purple toolbar. Then, without quitting the app,
+              // try changing the seedColor in the colorScheme below to Colors.green
+              // and then invoke "hot reload" (save your changes or press the "hot
+              // reload" button in a Flutter-supported IDE, or press "r" if you used
+              // the command line to start the app).
+              //
+              // Notice that the counter didn't reset back to zero; the application
+              // state is not lost during the reload. To reset the state, use hot
+              // restart instead.
+              //
+              // This works for code too, not just values: Most code changes can be
+              // tested with just a hot reload.
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            builder: (context, child) {
+              if (child != null) {
+                return SystemEventObserver(
+                  networkInfoFactory: NetworkInfoFactoryImpl(FlavorConfig()),
+                  child: child,
+                );
+              } else {
+                return const Center(
+                  child:
+                      Text("App Not Started Correctly"), //TODO: this a widget
+                );
+              }
+            },
+            home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          );
+        });
   }
 }
 
