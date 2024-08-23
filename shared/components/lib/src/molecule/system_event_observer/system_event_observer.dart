@@ -156,10 +156,17 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
             BuildContext context,
             AsyncSnapshot<connection.InternetConnectionStatus> streamSnapshot,
           ) {
+
             if (streamSnapshot.connectionState != ConnectionState.active) {
               return const Center(child:  CircularProgressIndicator(strokeWidth: 6.0,), ); //In Material //checking Internet status
               //TODO: load splash here
             } else {
+              if(streamSnapshot.hasError){
+                
+                return Center(child: Text(streamSnapshot.error.toString()), ); //In Material //checking Internet status error
+                //TODO: load  error splash here
+
+              }
               final result = streamSnapshot.requireData;
               return BannerHost(
                   hideBanner: switch (result) {
