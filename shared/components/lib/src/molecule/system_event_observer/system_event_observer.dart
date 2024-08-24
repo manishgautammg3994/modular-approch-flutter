@@ -3,12 +3,10 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:packages/packages.dart' as connection
-    show InternetConnectionStatus;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
-import 'package:core/core.dart' show AppLocalizationsX, NetworkInfoFactory;
+import 'package:core/core.dart' show AppLocalizationsX, NetworkInfoFactory, NetworkConnectivityStatus;
 
 import '../../atom/atom.dart' show BannerHost;
 
@@ -35,7 +33,7 @@ final class SystemEventObserver extends StatefulWidget {
   final Future<ui.AppExitResponse> Function()? onAppExitRequest;
   final void Function(AccessibilityFeatures)?
       onSystemAccessibilityFeaturesChanged;
-  final void Function(connection.InternetConnectionStatus)?
+  final void Function(NetworkConnectivityStatus)?
       onConnectivityChange;
 
   @override
@@ -45,21 +43,17 @@ final class SystemEventObserver extends StatefulWidget {
 final class _SystemEventObserverState extends State<SystemEventObserver>
     with WidgetsBindingObserver {
   late final _connectivity = _connectivityStream();
-  late final StreamSubscription<connection.InternetConnectionStatus>
+  late final StreamSubscription<NetworkConnectivityStatus>
       _connectivitySubscription;
-  Stream<connection.InternetConnectionStatus> _connectivityStream() async* {
+  Stream<NetworkConnectivityStatus> _connectivityStream() async* {
     try {
       final connectivity = widget.networkInfoFactory.createNetworkInfo();
-      final result = await connectivity.isConnected;
-      yield result
-          ? connection.InternetConnectionStatus.connected
-          : connection.InternetConnectionStatus
-              .disconnected; //single distinct result only
+      //single distinct result only
       yield* connectivity.onStatusChange; // Flatten the stream
     } catch (e) {
       // Handle the error appropriately
       debugPrint('Connectivity error: $e');
-      yield connection.InternetConnectionStatus.disconnected;
+      // yield NetworkConnectivityStatus.offline; //it should be here it is must
     }
   }
 
@@ -150,14 +144,16 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
 
   @override
   Widget build(BuildContext context) =>
-      StreamBuilder<connection.InternetConnectionStatus>(
+      StreamBuilder<NetworkConnectivityStatus>(
+        initialData: NetworkConnectivityStatus.checking, //must be here
           stream: _connectivity,
           builder: (
             BuildContext context,
-            AsyncSnapshot<connection.InternetConnectionStatus> streamSnapshot,
+            AsyncSnapshot<NetworkConnectivityStatus> streamSnapshot,
           ) {
 
-            if (streamSnapshot.connectionState != ConnectionState.active) {
+
+            if (streamSnapshot.connectionState == ConnectionState.none) {
               return Center(child: Text("Loading Connection"), ); //In Material //checking Internet status
               //TODO: load splash here
             } else {
@@ -170,15 +166,16 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
               final result = streamSnapshot.requireData;
               return BannerHost(
                   hideBanner: switch (result) {
-                    connection.InternetConnectionStatus.disconnected => false,
-                
+                    NetworkConnectivityStatus.offline => false,
+                    NetworkConnectivityStatus.checking => false,
                     _ => true
                   },
 
                   //  (result != connection.ConnectivityResult.none || result != connection.ConnectivityResult.vpn ),
                   banner: Material(
                     color: switch (result) {
-                      connection.InternetConnectionStatus.disconnected => Colors.red,
+                      NetworkConnectivityStatus.offline => Colors.red,
+                      NetworkConnectivityStatus.checking => Colors.yellow,
                      
                       _ => Colors.green,
                     },
@@ -192,9 +189,10 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                       ),
                       child: Text(
                         switch (result) {
-                          connection.InternetConnectionStatus.disconnected =>
+                          NetworkConnectivityStatus.offline =>
                             context.l10n.notConnected,
-                         
+                          NetworkConnectivityStatus.checking =>
+                          "checking internet connection",
                           _ => context.l10n.connected("internet"
                             // context.l10n.internet
                             )
@@ -216,7 +214,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
     WidgetsBinding.instance.removeObserver(this);
 
     _connectivitySubscription.cancel(); // Dispose the connectivity subscription
-
+    // _connectivityChecker.dispose(); // Dispose the connectivity checker
     super.dispose();
   }
 }

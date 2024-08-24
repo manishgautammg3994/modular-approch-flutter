@@ -15,7 +15,7 @@ dependencies:
     sdk: dart
   cupertino_icons:
   
-  internet_connection_checker: 
+
   json_annotation:
   freezed_annotation:
   dartz:

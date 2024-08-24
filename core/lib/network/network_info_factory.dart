@@ -1,6 +1,10 @@
 import 'package:core/network/network_info.dart';
-import 'package:packages/packages.dart';
+
 import 'package:preferences/preferences.dart';
+
+
+import 'network_connectivity_checker_io.dart' if (dart.library.html) 'network_connectivity_checker_web.dart';
+
 
 abstract interface class NetworkInfoFactory {
   NetworkInfo createNetworkInfo();
@@ -13,18 +17,8 @@ class NetworkInfoFactoryImpl implements NetworkInfoFactory {
 
   @override
   NetworkInfo createNetworkInfo() {
-    final connectionChecker = InternetConnectionChecker.createInstance(
-      customCheckOptions: [
-        AddressCheckOption(
-          uri: Uri.parse('${config.baseUrl}'),
-          responseStatusFn: (response) {
-            return response.statusCode == 404;
-          },
-        ),
-      ],
-      useDefaultOptions: false,
-    );
-
+    final
+      connectionChecker=NetworkConnectivityCheckerImpl(uris: [Uri.parse(config.baseUrl)]);
     return NetworkInfoImpl(connectionChecker);
   }
 }
