@@ -8,7 +8,7 @@ export 'package:freezed_annotation/freezed_annotation.dart';
 export 'package:dartz/dartz.dart' hide State;
 export 'package:hive_flutter/hive_flutter.dart';
 export 'package:l10n/l10n.dart';
-export 'package:internet_connection_checker/internet_connection_checker.dart';
+
 // ?# dev_dependencies:
 
 // ? # self
