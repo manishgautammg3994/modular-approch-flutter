@@ -1,6 +1,8 @@
 // network_connectivity_checker_io.dart
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 import 'network_connectivity_checker.dart';
 import 'network_connectivity_status.dart';
 
@@ -16,32 +18,48 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
   @override
   Stream<NetworkConnectivityStatus> get onStatusChange async* {
     while (true) {
-      yield* _checkConnection();
+      final status = await _checkConnection();
+      yield status;
       await Future.delayed(interval);
     }
   }
 
-  Stream<NetworkConnectivityStatus> _checkConnection() async* {
-    yield NetworkConnectivityStatus.checking;
-
+  Future<NetworkConnectivityStatus> _checkConnection() async {
     for (final uri in uris) {
       try {
-        final request = await HttpClient().headUrl(uri).timeout(Duration(seconds: 5));
-        final response = await request.close();
-        if (response.statusCode == 404 || (response.statusCode >= 200 && response.statusCode <= 404) ) {
-          yield NetworkConnectivityStatus.online;
-          return;
+        final result = await compute(_performNetworkRequest, uri);
+        if (result == NetworkConnectivityStatus.online ||
+            result == NetworkConnectivityStatus.appOver) {
+          return result;
         }
       } catch (e) {
-        continue;
+        print('Error checking connection: $e');
       }
     }
-    yield NetworkConnectivityStatus.offline;
+    return NetworkConnectivityStatus.offline;
   }
+}
+
+Future<NetworkConnectivityStatus> _performNetworkRequest(Uri uri) async {
+  try {
+  final request = await HttpClient().headUrl(uri).timeout(Duration(seconds: 5));
+  final response = await request.close();
+
+    if (response.statusCode >= 200 && response.statusCode <= 404) {
+      return NetworkConnectivityStatus.online;
+    } else if (response.statusCode > 404 && response.statusCode <= 600) {
+      return NetworkConnectivityStatus.appOver;
+    }
+  } catch (e) {
+    print(' Network Request Error checking connection: $e');
+  }
+
+  return NetworkConnectivityStatus.offline;
 }
 
 
 /////////////////////
+
 
 
 
@@ -118,7 +136,7 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
 //
 //     for (final uri in uris) {
 //       try {
-//         final result = await InternetAddress.lookup(uri.host).timeout(Duration(seconds: 4));
+//         final result = await InternetAddress.lookup(uri.host).timeout(Duration(seconds: 4)).timeout exceptio handling;
 //         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
 //           yield NetworkConnectivityStatus.online;
 //           return; // Exit early if we find an online status

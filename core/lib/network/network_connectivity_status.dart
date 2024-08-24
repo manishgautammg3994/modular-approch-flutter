@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
+
 /// Connectivity status
-enum NetworkConnectivityStatus {
+ enum NetworkConnectivityStatus {
   /// Device is online
   online,
 
@@ -8,4 +10,6 @@ enum NetworkConnectivityStatus {
 
   /// Package is checking... internet state
   checking,
+  /// Package is checking... internet state
+  appOver,
 }
