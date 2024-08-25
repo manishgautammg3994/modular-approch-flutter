@@ -47,7 +47,7 @@ Future<NetworkConnectivityStatus> _performNetworkRequest(Uri uri) async {
 
     if (response.statusCode >= 200 && response.statusCode <= 404) {
       return NetworkConnectivityStatus.online;
-    } else if (response.statusCode > 404 && response.statusCode <= 600) {
+    } else if (response.statusCode > 499 && response.statusCode <= 600) {
       return NetworkConnectivityStatus.appOver;
     }
   } catch (e) {

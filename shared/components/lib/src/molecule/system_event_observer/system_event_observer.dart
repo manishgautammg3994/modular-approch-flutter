@@ -158,7 +158,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
               //TODO: load splash here
             } else {
               if(streamSnapshot.hasError){
-                
+
                 return Center(child: Text(streamSnapshot.error.toString()), ); //In Material //checking Internet status error
                 //TODO: load  error splash here
 
@@ -168,6 +168,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                   hideBanner: switch (result) {
                     NetworkConnectivityStatus.offline => false,
                     NetworkConnectivityStatus.checking => false,
+                    NetworkConnectivityStatus.appOver => false,
                     _ => true
                   },
 
@@ -176,7 +177,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                     color: switch (result) {
                       NetworkConnectivityStatus.offline => Colors.red,
                       NetworkConnectivityStatus.checking => Colors.yellow,
-                     
+                      NetworkConnectivityStatus.appOver => Colors.redAccent,
                       _ => Colors.green,
                     },
                     // (result != connection.ConnectivityResult.none)
@@ -189,10 +190,13 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                       ),
                       child: Text(
                         switch (result) {
-                          NetworkConnectivityStatus.offline =>
-                            context.l10n.notConnected,
                           NetworkConnectivityStatus.checking =>
                           "checking internet connection",
+                          NetworkConnectivityStatus.offline =>
+                            context.l10n.notConnected,
+                          NetworkConnectivityStatus.appOver =>
+                          "App Under Maintainace Mode",
+
                           _ => context.l10n.connected("internet"
                             // context.l10n.internet
                             )
@@ -200,7 +204,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                         // (result != connection.ConnectivityResult.none)
                         //     ? context.l10n.connected(result.name.toString())
                         //     : context.l10n.notConnected,
-                        style: const TextStyle(color: Colors.white),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors. white,fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),

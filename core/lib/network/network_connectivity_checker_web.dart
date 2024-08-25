@@ -1,6 +1,7 @@
 // network_connectivity_checker_web.dart
 import 'dart:async';
-import 'dart:html' as html;
+
+import 'package:packages/packages.dart' ;
 import 'network_connectivity_checker.dart';
 import 'network_connectivity_status.dart';
 
@@ -21,13 +22,14 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
     }
   }
 
+
   Stream<NetworkConnectivityStatus> _checkConnection() async* {
     // yield NetworkConnectivityStatus.checking;
 
     for (final uri in uris) {
       try {
         // print('Network check on web ${uri.toString()},');
-        final request = html.window.navigator.onLine;
+        final request = window.navigator.onLine;
         // await html.HttpRequest.requestCrossOrigin(
         //   uri.toString(),
         //   method: 'HEAD',
@@ -35,7 +37,7 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
         // ).timeout(Duration(seconds:4));
 
         // Check if the status code is 200 OK
-        if (request!) {
+        if (request) {
           yield NetworkConnectivityStatus.online;
           return; // Exit early if we find an online status
         }
