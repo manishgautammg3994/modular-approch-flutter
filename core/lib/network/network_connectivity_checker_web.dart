@@ -25,28 +25,31 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
 
   Stream<NetworkConnectivityStatus> _checkConnection() async* {
     // yield NetworkConnectivityStatus.checking;
-
-    for (final uri in uris) {
-      try {
-        // print('Network check on web ${uri.toString()},');
-        final request = window.navigator.onLine;
-        // await html.HttpRequest.requestCrossOrigin(
-        //   uri.toString(),
-        //   method: 'HEAD',
-        //
-        // ).timeout(Duration(seconds:4));
-
-        // Check if the status code is 200 OK
-        if (request) {
-          yield NetworkConnectivityStatus.online;
-          return; // Exit early if we find an online status
-        }
-      } catch (e) {
-        // Log or handle the error if needed
-        print('Network check failed: ${e.toString()}');
-        continue;
-      }
-    }
+if(window.navigator.onLine){
+  yield NetworkConnectivityStatus.online;
+  return;
+}
+    // for (final uri in uris) {
+    //   try {
+    //     // print('Network check on web ${uri.toString()},');
+    //     final request = window.navigator.onLine;
+    //     // await html.HttpRequest.requestCrossOrigin(
+    //     //   uri.toString(),
+    //     //   method: 'HEAD',
+    //     //
+    //     // ).timeout(Duration(seconds:4));
+    //
+    //     // Check if the status code is 200 OK
+    //     if (request) {
+    //       yield NetworkConnectivityStatus.online;
+    //       return; // Exit early if we find an online status
+    //     }
+    //   } catch (e) {
+    //     // Log or handle the error if needed
+    //     print('Network check failed: ${e.toString()}');
+    //     continue;
+    //   }
+    // }
     yield NetworkConnectivityStatus.offline;
   }
 }
