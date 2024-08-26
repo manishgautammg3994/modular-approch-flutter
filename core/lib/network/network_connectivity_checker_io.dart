@@ -12,53 +12,35 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
   });
   final List<Uri> uris;
 
-  final StreamController<NetworkConnectivityStatus> controller =
-  StreamController<NetworkConnectivityStatus>();
+final _connectivity =Connectivity();
 
   @override
   // TODO: implement onStatusChange
-  Stream<NetworkConnectivityStatus> get onStatusChange async*{
-    final connectivity = Connectivity();
-    connectivity.onConnectivityChanged.listen((connectivityResult)async{
-      final networkResult=  await _getNetworkStatus();
-
-      if (connectivityResult.lastOrNull == null ||
-          connectivityResult.lastOrNull == ConnectivityResult.none) {
-        controller.add(NetworkConnectivityStatus.offline);
-      } else if (connectivityResult.lastOrNull == ConnectivityResult.vpn &&
-          networkResult == NetworkConnectivityStatus.online) {
-        controller.add(NetworkConnectivityStatus.onlineButVPN);
-      } else if (connectivityResult.lastOrNull == ConnectivityResult.vpn &&
-          networkResult == NetworkConnectivityStatus.offline) {
-        controller.add(NetworkConnectivityStatus.offlineButVPN);
-      } else if ([
-        ConnectivityResult.mobile,
-        ConnectivityResult.wifi,
-        ConnectivityResult.bluetooth,
-        ConnectivityResult.ethernet,
-        ConnectivityResult.other
-      ].contains(connectivityResult.lastOrNull) &&
-          networkResult == NetworkConnectivityStatus.online) {
-        controller.add(NetworkConnectivityStatus.online);
+  Stream<NetworkConnectivityStatus> get onStatusChange => _connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
+      if (connectivityResult.lastOrNull == ConnectivityResult.none) {
+        return NetworkConnectivityStatus.offline;
+      } else {
+        final networkResult = await compute(_performNetworkRequest, uris.first);
+        return networkResult;
       }
     });
-    yield*  controller.stream ;
-  }
+
+
   @override
   Future<NetworkConnectivityStatus> hasConnection() async {
-   return await _getNetworkStatus();
+  final networkResult = await compute(_performNetworkRequest, uris.first);
+    return networkResult;
   }
 
   @override
   void dispose() {
-    controller.close();
+
   }
-  Future<NetworkConnectivityStatus> _getNetworkStatus() async => await compute(_performNetworkRequest, uris.first);
 
   Future<NetworkConnectivityStatus> _performNetworkRequest(Uri uri) async {
     try {
-      final request = await HttpClient().headUrl(uri).timeout(
-          Duration(seconds: 5));
+      final request =
+      await HttpClient().headUrl(uri).timeout(Duration(seconds: 5));
       final response = await request.close();
 
       if (response.statusCode >= 200 && response.statusCode <= 404) {
@@ -67,14 +49,47 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
         return NetworkConnectivityStatus.appOver;
       }
     } catch (e) {
-      print(' Network Request Error checking connection: $e');
+      print('Network Request Error checking connection: $e');
     }
 
     return NetworkConnectivityStatus.offline;
   }
 
 
-}
+      // Connectivity().onConnectivityChanged.map((connectivityResult)async*{
+      //   final request = await HttpClient().headUrl(uri).timeout(
+      //       Duration(seconds: 5));
+      //   final response = await request.close();
+      //
+      //   switch(connectivityResult.lastOrNull){
+      //     case null:
+      //       yield NetworkConnectivityStatus.offline;
+      //     case ConnectivityResult.none:
+      //       yield NetworkConnectivityStatus.offline;
+      //     case ConnectivityResult.vpn when (response.statusCode >=200 && response.statusCode <=499):
+      //       yield NetworkConnectivityStatus.onlineButVPN;
+      //     case ConnectivityResult.bluetooth :
+      //
+      //     case ConnectivityResult.wifi:
+      //       // TODO: Handle this case.
+      //     case ConnectivityResult.ethernet:
+      //       // TODO: Handle this case.
+      //     case ConnectivityResult.mobile:
+      //       // TODO: Handle this case.
+      //
+      //       // TODO: Handle this case.
+      //     case ConnectivityResult.vpn:
+      //       // TODO: Handle this case.
+      //     case ConnectivityResult.other:
+            // TODO: Handle this case.
+      //   }
+      // });
+
+
+  }
+
+
+
 
 
 // // network_connectivity_checker_io.dart

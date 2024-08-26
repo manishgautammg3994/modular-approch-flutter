@@ -11,6 +11,8 @@ export 'dummy_file.dart' if (dart.library.js_interop )'package:web/web.dart' sho
 // comment me
 // export 'package:web/web.dart';
 export 'package:connectivity_plus/connectivity_plus.dart';
+// export 'package:rxdart/rxdart.dart';
+
 
 export 'package:dartz/dartz.dart' hide State;
 export 'package:hive_flutter/hive_flutter.dart';
