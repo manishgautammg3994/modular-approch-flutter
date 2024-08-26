@@ -5,65 +5,53 @@ import 'package:flutter/foundation.dart';
 
 import 'network_connectivity_checker.dart';
 import 'network_connectivity_status.dart';
-
-
 class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
   NetworkConnectivityCheckerImpl({
     required this.uris,
 
-  }) {
-    _statusController = StreamController<NetworkConnectivityStatus>.broadcast(
-      onListen: _startMonitoring,
-      onCancel: _stopMonitoring,
-    );
-  }
-
+  });
   final List<Uri> uris;
 
-  late final StreamController<NetworkConnectivityStatus> _statusController;
-  late final StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+  final StreamController<NetworkConnectivityStatus> controller =
+  StreamController<NetworkConnectivityStatus>();
+
   @override
-  Future<NetworkConnectivityStatus> hasConnection() async{
+  // TODO: implement onStatusChange
+  Stream<NetworkConnectivityStatus> get onStatusChange async*{
+    final connectivity = Connectivity();
+    connectivity.onConnectivityChanged.listen((connectivityResult)async{
+      final networkResult=  await _getNetworkStatus();
+
+      if (connectivityResult.lastOrNull == null ||
+          connectivityResult.lastOrNull == ConnectivityResult.none) {
+        controller.add(NetworkConnectivityStatus.offline);
+      } else if (connectivityResult.lastOrNull == ConnectivityResult.vpn &&
+          networkResult == NetworkConnectivityStatus.online) {
+        controller.add(NetworkConnectivityStatus.onlineButVPN);
+      } else if (connectivityResult.lastOrNull == ConnectivityResult.vpn &&
+          networkResult == NetworkConnectivityStatus.offline) {
+        controller.add(NetworkConnectivityStatus.offlineButVPN);
+      } else if ([
+        ConnectivityResult.mobile,
+        ConnectivityResult.wifi,
+        ConnectivityResult.bluetooth,
+        ConnectivityResult.ethernet,
+        ConnectivityResult.other
+      ].contains(connectivityResult.lastOrNull) &&
+          networkResult == NetworkConnectivityStatus.online) {
+        controller.add(NetworkConnectivityStatus.online);
+      }
+    });
+    yield*  controller.stream ;
+  }
+  @override
+  Future<NetworkConnectivityStatus> hasConnection() async {
    return await _getNetworkStatus();
   }
-  @override
-  Stream<NetworkConnectivityStatus> get onStatusChange => _statusController.stream;
-
-  void _startMonitoring() {
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) async{
-      // Received changes in available connectivity types!
-      if( result.lastOrNull != ConnectivityResult.none){
-       await _getNetworkStatus().then((networkStatus){
-          if(result.lastOrNull == ConnectivityResult.vpn && (networkStatus == NetworkConnectivityStatus.online || networkStatus == NetworkConnectivityStatus.appOver ) ){
-            _statusController.add(NetworkConnectivityStatus.onlineButVPN);
-          }else{
-            _statusController.add(networkStatus);
-
-          }
-          // return;
-        });
-
-      }else{
-        _statusController.add(NetworkConnectivityStatus.offline);
-      }
-
-    });
-  }
-
-
-
-
-
-
-  void _stopMonitoring() {
-    _connectivitySubscription.cancel();
-  }
 
   @override
-  void dispose()  {
-     _stopMonitoring();
-     _statusController.close();
-
+  void dispose() {
+    controller.close();
   }
   Future<NetworkConnectivityStatus> _getNetworkStatus() async => await compute(_performNetworkRequest, uris.first);
 
@@ -86,8 +74,8 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
   }
 
 
-
 }
+
 
 // // network_connectivity_checker_io.dart
 // import 'dart:async';

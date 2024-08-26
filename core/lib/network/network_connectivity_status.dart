@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
   onlineButVPN,
   /// Device is offline
   offline,
+  offlineButVPN,
   /// Response as App Under Maintainace Mode
   appOver,
 }
