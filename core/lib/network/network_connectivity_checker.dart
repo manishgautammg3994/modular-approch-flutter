@@ -9,5 +9,7 @@ abstract interface class NetworkConnectivityChecker {
   const NetworkConnectivityChecker();
 
   Stream<NetworkConnectivityStatus> get onStatusChange;
+  Future<NetworkConnectivityStatus>  hasConnection();
+   void dispose();
 }
 

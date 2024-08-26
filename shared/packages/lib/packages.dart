@@ -6,7 +6,11 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:json_annotation/json_annotation.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
 // export 'dummy_file.dart' if(dart.library.js_interop)
-export 'dummy_file.dart' if (dart.library.js_interop )'package:web/web.dart' show window;
+export 'dummy_file.dart' if (dart.library.js_interop )'package:web/web.dart' show window, EventListener,JSFunctionRepType,FunctionToJSExportedDartFunction;
+//
+// comment me
+// export 'package:web/web.dart';
+export 'package:connectivity_plus/connectivity_plus.dart';
 
 export 'package:dartz/dartz.dart' hide State;
 export 'package:hive_flutter/hive_flutter.dart';

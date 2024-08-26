@@ -21,7 +21,7 @@ final class SystemEventObserver extends StatefulWidget {
     this.onMemoryPressure,
     this.onAppExitRequest,
     this.onSystemAccessibilityFeaturesChanged,
-    this.onConnectivityChange,
+
   });
   final Widget child;
   final NetworkInfoFactory networkInfoFactory;
@@ -33,8 +33,7 @@ final class SystemEventObserver extends StatefulWidget {
   final Future<ui.AppExitResponse> Function()? onAppExitRequest;
   final void Function(AccessibilityFeatures)?
       onSystemAccessibilityFeaturesChanged;
-  final void Function(NetworkConnectivityStatus)?
-      onConnectivityChange;
+
 
   @override
   State<SystemEventObserver> createState() => _SystemEventObserverState();
@@ -42,9 +41,7 @@ final class SystemEventObserver extends StatefulWidget {
 
 final class _SystemEventObserverState extends State<SystemEventObserver>
     with WidgetsBindingObserver {
-  late final _connectivity = _connectivityStream();
-  late final StreamSubscription<NetworkConnectivityStatus>
-      _connectivitySubscription;
+
   Stream<NetworkConnectivityStatus> _connectivityStream() async* {
     try {
       final connectivity = widget.networkInfoFactory.createNetworkInfo();
@@ -62,18 +59,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkSemantics();
-    _connectivitySubscription = _connectivityStream().listen((result) {
-      if (widget.onConnectivityChange != null) {
-        widget.onConnectivityChange!(result);
-      }
-      // (error) {
-      //   debugPrint('Connectivity error: $error');
-      // };
-      // () {
-      //   debugPrint('Connectivity stream closed');
-      // };
-      // true;
-    });
+
   }
 
   void _checkSemantics() {
@@ -146,7 +132,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   Widget build(BuildContext context) =>
       StreamBuilder<NetworkConnectivityStatus>(
         initialData: NetworkConnectivityStatus.checking, //must be here
-          stream: _connectivity,
+          stream:_connectivityStream(),
           builder: (
             BuildContext context,
             AsyncSnapshot<NetworkConnectivityStatus> streamSnapshot,
@@ -215,9 +201,10 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
 
   @override
   void dispose() {
+    widget.networkInfoFactory.dispose();
     WidgetsBinding.instance.removeObserver(this);
 
-    _connectivitySubscription.cancel(); // Dispose the connectivity subscription
+   // Dispose the connectivity subscription
     // _connectivityChecker.dispose(); // Dispose the connectivity checker
     super.dispose();
   }

@@ -4,8 +4,9 @@ import 'network_connectivity_checker.dart';
 import 'network_connectivity_status.dart';
 
 abstract interface class NetworkInfo {
-  // Future<bool> get isConnected;
   Stream<NetworkConnectivityStatus> get onStatusChange;
+  Future<NetworkConnectivityStatus> get isConnected;
+  void dispose();
 }
 
 class NetworkInfoImpl implements NetworkInfo {
@@ -13,10 +14,13 @@ class NetworkInfoImpl implements NetworkInfo {
 
   NetworkInfoImpl(this.connectionChecker);
 
-  // @override
-  // Future<bool> get isConnected => connectionChecker.hasConnection;
+  @override
+  Future<NetworkConnectivityStatus> get isConnected => connectionChecker.hasConnection();
 
   @override
   Stream<NetworkConnectivityStatus> get onStatusChange =>
       connectionChecker.onStatusChange;
+
+  @override
+  void dispose() => connectionChecker.dispose();
 }

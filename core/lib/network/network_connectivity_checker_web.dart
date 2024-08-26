@@ -1,12 +1,15 @@
 // network_connectivity_checker_web.dart
 import 'dart:async';
+import 'dart:js_interop';
 
+// import 'package:core/utils/extensions/log/log_x.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:packages/packages.dart' ;
 import 'network_connectivity_checker.dart';
 import 'network_connectivity_status.dart';
 
 class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
-  const NetworkConnectivityCheckerImpl({
+   NetworkConnectivityCheckerImpl({
     required this.uris,
     this.interval = const Duration(seconds: 5),
   });
@@ -14,42 +17,39 @@ class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
   final List<Uri> uris;
   final Duration interval;
 
+
+  final StreamController<NetworkConnectivityStatus> controller =
+  StreamController<NetworkConnectivityStatus>();
   @override
   Stream<NetworkConnectivityStatus> get onStatusChange async* {
-    while (true) {
-      yield* _checkConnection();
-      await Future.delayed(interval);
-    }
+
+    yield window.navigator.onLine
+        ? NetworkConnectivityStatus.online
+        : NetworkConnectivityStatus.offline;
+
+  window.addEventListener('online',(){
+      debugPrint("online");
+      controller.add(NetworkConnectivityStatus.online);
+    }.toJS);
+    window.addEventListener('offline',(){
+      debugPrint("offline");
+      controller.add(NetworkConnectivityStatus.offline);
+    }.toJS);
+
+    yield*  controller.stream ;
+}
+
+  @override
+  void dispose() {
+    window.removeEventListener('online',(){}.toJS);
+    window.removeEventListener('offline',(){}.toJS);
+     controller.close();
   }
 
-
-  Stream<NetworkConnectivityStatus> _checkConnection() async* {
-    // yield NetworkConnectivityStatus.checking;
-if(window.navigator.onLine){
-  yield NetworkConnectivityStatus.online;
-  return;
-}
-    // for (final uri in uris) {
-    //   try {
-    //     // print('Network check on web ${uri.toString()},');
-    //     final request = window.navigator.onLine;
-    //     // await html.HttpRequest.requestCrossOrigin(
-    //     //   uri.toString(),
-    //     //   method: 'HEAD',
-    //     //
-    //     // ).timeout(Duration(seconds:4));
-    //
-    //     // Check if the status code is 200 OK
-    //     if (request) {
-    //       yield NetworkConnectivityStatus.online;
-    //       return; // Exit early if we find an online status
-    //     }
-    //   } catch (e) {
-    //     // Log or handle the error if needed
-    //     print('Network check failed: ${e.toString()}');
-    //     continue;
-    //   }
-    // }
-    yield NetworkConnectivityStatus.offline;
+  @override
+  Future<NetworkConnectivityStatus> hasConnection() async{
+   return window.navigator.onLine ? NetworkConnectivityStatus.online : NetworkConnectivityStatus.offline;
   }
-}
+
+  }
+// window.navigator.onLine ;

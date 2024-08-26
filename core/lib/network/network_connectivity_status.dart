@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
   checking,
   /// Device is online
   online,
+  onlineButVPN,
   /// Device is offline
   offline,
   /// Response as App Under Maintainace Mode
