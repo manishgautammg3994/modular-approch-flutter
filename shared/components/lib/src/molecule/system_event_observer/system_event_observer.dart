@@ -41,24 +41,36 @@ final class SystemEventObserver extends StatefulWidget {
 
 final class _SystemEventObserverState extends State<SystemEventObserver>
     with WidgetsBindingObserver {
-  late final Stream<NetworkConnectivityStatus> _connectivity;
-  Stream<NetworkConnectivityStatus> _connectivityStream() async* {
-    try {
-      final connectivity = widget.networkInfoFactory.createNetworkInfo();
-      //single distinct result only
-      yield* connectivity.onStatusChange; // Flatten the stream
-    } catch (e) {
-      // Handle the error appropriately
-      debugPrint('Connectivity error: $e');
-      // yield NetworkConnectivityStatus.offline; //it should be here it is must
-    }
-  }
+  // late final Stream<NetworkConnectivityStatus> _connectivity;
+  // Create a global StreamController
+  final _connectivityController = StreamController<NetworkConnectivityStatus>();
+
+  // Create a stream from the StreamController
+  late final Stream<NetworkConnectivityStatus> _connectivity =
+      _connectivityController.stream;
+  // Stream<NetworkConnectivityStatus> _connectivityStream() async* {
+  //   try {
+  //     final connectivity = widget.networkInfoFactory.createNetworkInfo();
+  //     //single distinct result only
+  //     yield* connectivity.onStatusChange; // Flatten the stream
+  //   } catch (e) {
+  //     // Handle the error appropriately
+  //     debugPrint('Connectivity error: $e');
+  //     // yield NetworkConnectivityStatus.offline; //it should be here it is must
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _connectivity = _connectivityStream();
+    // _connectivity = _connectivityStream();
+    // Listen to connectivity changes and add events to the stream
+    widget.networkInfoFactory.createNetworkInfo().onStatusChange.listen((status) {
+      if (!_connectivityController.isClosed) {
+        _connectivityController.add(status);
+      }
+    });
     _checkSemantics();
 
   }
@@ -203,10 +215,12 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   @override
   void dispose() {
     widget.networkInfoFactory.dispose();
+    _connectivityController.close(); // Close the StreamController
+
     WidgetsBinding.instance.removeObserver(this);
 
    // Dispose the connectivity subscription
-    // _connectivityChecker.dispose(); // Dispose the connectivity checker
+   //  _connectivityChecker.dispose(); // Dispose the connectivity checker
     super.dispose();
   }
 }

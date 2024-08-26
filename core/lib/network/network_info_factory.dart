@@ -10,6 +10,7 @@ if (dart.library.js_interop )'network_connectivity_checker_web.dart';
 
 
 abstract interface class NetworkInfoFactory {
+  const  NetworkInfoFactory();
   NetworkInfo createNetworkInfo();
   void dispose();
 }
