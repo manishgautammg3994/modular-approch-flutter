@@ -1,8 +1,6 @@
 // network_connectivity_checker_web.dart
 import 'dart:async';
 import 'dart:js_interop';
-
-// import 'package:core/utils/extensions/log/log_x.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:packages/packages.dart' ;
 import 'network_connectivity_checker.dart';

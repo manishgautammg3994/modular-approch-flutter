@@ -41,7 +41,7 @@ final class SystemEventObserver extends StatefulWidget {
 
 final class _SystemEventObserverState extends State<SystemEventObserver>
     with WidgetsBindingObserver {
-
+  late final Stream<NetworkConnectivityStatus> _connectivity;
   Stream<NetworkConnectivityStatus> _connectivityStream() async* {
     try {
       final connectivity = widget.networkInfoFactory.createNetworkInfo();
@@ -58,6 +58,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _connectivity = _connectivityStream();
     _checkSemantics();
 
   }
@@ -132,7 +133,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   Widget build(BuildContext context) =>
       StreamBuilder<NetworkConnectivityStatus>(
         initialData: NetworkConnectivityStatus.checking, //must be here
-          stream:_connectivityStream(),
+          stream:_connectivity,
           builder: (
             BuildContext context,
             AsyncSnapshot<NetworkConnectivityStatus> streamSnapshot,
