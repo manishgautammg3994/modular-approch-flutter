@@ -5,8 +5,11 @@ export 'package:intl/intl.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:json_annotation/json_annotation.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
-// export 'dummy_file.dart' if(dart.library.js_interop)
-export 'dummy_file.dart' if (dart.library.js_interop )'package:web/web.dart' show window, EventListener,JSFunctionRepType,FunctionToJSExportedDartFunction;
+// // export 'dummy_file.dart' if(dart.library.js_interop)
+// export
+// // 'dummy_file.dart' if (dart.library.js_interop )
+//   'package:web/web.dart' show window ;
+export 'package:dio/dio.dart';
 //
 // comment me
 // export 'package:web/web.dart';

@@ -10,6 +10,6 @@ abstract interface class NetworkConnectivityChecker {
 
   Stream<NetworkConnectivityStatus> get onStatusChange;
   Future<NetworkConnectivityStatus>  hasConnection();
-   void dispose();
+
 }
 

@@ -15,5 +15,5 @@ part of '../config.dart';
 final class _ProductionFlavorConfig extends FlavorConfig {
   const _ProductionFlavorConfig()
       : super._internal(
-            'Antinna', 'https://img.shields.io/pub/', Flavor.production,'AlOp7lBkcFRdJnXFkGcBHwM9I9TJMMgr',true);
+            'Antinna', 'https://jsonplaceholder.typicode.com/posts', Flavor.production,'AlOp7lBkcFRdJnXFkGcBHwM9I9TJMMgr',true);
 }

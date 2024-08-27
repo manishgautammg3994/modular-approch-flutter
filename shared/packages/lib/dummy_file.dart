@@ -1,3 +1,5 @@
 //nothing here
-external get window;
-typedef EventListener = Function();
+import 'dart:js/js_wasm.dart';
+
+@JS()
+external dynamic get window;

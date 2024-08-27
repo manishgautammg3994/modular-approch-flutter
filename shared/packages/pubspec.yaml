@@ -16,6 +16,7 @@ dependencies:
   cupertino_icons:
   web:
   connectivity_plus:
+  dio:
 #  rxdart:
 
 
