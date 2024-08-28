@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  # ------------- Core Modules ----------------
   packages:
     path: shared/packages
   preferences:
@@ -40,11 +40,13 @@ dependencies:
   core:
     path: core
 
-  # ------------- Feature Module
+  # ------------- Basic Every App Feature Module ----------------
   themer:
     path: features/themer
   updater:
     path: features/updater
+  l10nr:
+    path: features/l10nr
 
 
   # The following adds the Cupertino Icons font to your application.

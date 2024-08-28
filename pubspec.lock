@@ -109,7 +109,7 @@ packages:
     source: hosted
     version: "2.7.0"
   cupertino_icons:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cupertino_icons
       sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
@@ -268,6 +268,13 @@ packages:
     dependency: transitive
     description:
       path: "shared/l10n"
+      relative: true
+    source: path
+    version: "0.0.1"
+  l10nr:
+    dependency: "direct main"
+    description:
+      path: "features/l10nr"
       relative: true
     source: path
     version: "0.0.1"

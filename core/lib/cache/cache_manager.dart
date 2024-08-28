@@ -1,6 +1,7 @@
-import '../constants/hive_keys.dart';
+import '../constants/constants.dart' show HiveKeys;
 import 'package:packages/packages.dart';
 import 'package:preferences/preferences.dart';
+
 
 /// Cache Manager
 /// A simple and efficient interface for persisting and retrieving state changes.
@@ -17,16 +18,16 @@ abstract interface class CacheManager {
   Future<void>? write(String key, dynamic value);
 
   /// Deletes a value by its [key].
-  Future<void> delete(String key);
+  Future<void>? delete(String key);
 
   /// Clears all cached data.
-  Future<void> clearAll();
+  Future<void>? clearAll();
 
   /// Compacts the cache to optimize storage.
-  Future<void> compact();
+  Future<void>? compact();
 
   /// Closes the cache manager and releases any resources.
-  Future<void> close();
+  Future<void>? close();
 }
 
 /// Implementation of [CacheManager] that uses `Hive` to persist and retrieve state changes from the local device.
@@ -68,41 +69,30 @@ final class CacheManagerImpl implements CacheManager {
     return _singleton!;
   }
 
-  @override
-  Future<void> clearAll() async {
-    if (_box.isOpen) {
-      await _box.clear();
-    }
-  }
+
 
   @override
-  Future<void> delete(String key) async {
-    if (_box.isOpen) {
-      await _box.delete(key);
-    }
-  }
+  Future<void>? delete(String key) => _box.isOpen ? _box.delete(key) : null;
+
 
   @override
-  dynamic read(String key) {
-    return _box.isOpen ? _box.get(key) : null;
-  }
+  dynamic read(String key) => _box.isOpen ? _box.get(key) : null;
+
 
   @override
-  Future<void>? write(String key, dynamic value) {
-    return _box.isOpen ? _box.put(key, value) : null;
-  }
+  Future<void>? write(String key, dynamic value) => _box.isOpen ? _box.put(key, value) : null;
 
   @override
-  Future<void> close() async {
-    if (_box.isOpen) {
-      await _box.close();
-    }
-  }
+  Future<void>? compact() =>_box.isOpen ? _box.compact() : null;
+
 
   @override
-  Future<void> compact() async {
-    if (_box.isOpen) {
-      await _box.compact();
-    }
-  }
+  Future<void>? clearAll() => _box.isOpen ? _box.clear() : null;
+
+  @override
+  Future<void>? close() => _box.isOpen ? _box.close() : null;
+
+
+
+
 }

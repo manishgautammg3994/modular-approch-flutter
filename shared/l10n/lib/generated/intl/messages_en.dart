@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(count) =>
-      "${Intl.plural(count, zero: 'No apples', one: 'One apple', other: '${count} apples')}";
+  static String m0(connectionType) => "Connected: ${connectionType}";
 
-  static String m1(connectionType) => "Connected: ${connectionType}";
+  static String m1(count) =>
+      "${Intl.plural(count, zero: 'No apples', one: 'One apple', other: '${count} apples')}";
 
   static String m2(gender, name) =>
       "${Intl.gender(gender, female: 'Hello Ms. ${name}', male: 'Hello Mr. ${name}', other: 'Hello ${name}')}";
@@ -32,17 +32,62 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "VPNnotAllowed":
-            MessageLookupByLibrary.simpleMessage("VPN Not Allowed"),
-        "apples": m0,
-        "connected": m1,
-        "date": MessageLookupByLibrary.simpleMessage(
+        "about_app_option": MessageLookupByLibrary.simpleMessage("About Us"),
+        "account_suspended":
+            MessageLookupByLibrary.simpleMessage("Account Banned"),
+        "app_maintenance":
+            MessageLookupByLibrary.simpleMessage("App Under Maintenance"),
+        "app_title":
+            MessageLookupByLibrary.simpleMessage("Localization Example"),
+        "app_version_info": MessageLookupByLibrary.simpleMessage("App Version"),
+        "cancel_action": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "connection_issue":
+            MessageLookupByLibrary.simpleMessage("Unable to Connect"),
+        "contact_option": MessageLookupByLibrary.simpleMessage("Contact Us"),
+        "current_date": MessageLookupByLibrary.simpleMessage(
             "Today\'s date is {date, date, ::yMMMMd}"),
-        "greeting": m2,
-        "notConnected": MessageLookupByLibrary.simpleMessage("Not Connected"),
-        "price": MessageLookupByLibrary.simpleMessage(
+        "dark_mode_option": MessageLookupByLibrary.simpleMessage("Dark Mode"),
+        "delete_confirmation_message": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete this?"),
+        "faq_option": MessageLookupByLibrary.simpleMessage("FAQ"),
+        "feedback_option": MessageLookupByLibrary.simpleMessage("Feedback"),
+        "feedback_thanks_message": MessageLookupByLibrary.simpleMessage(
+            "Thank you for your feedback!"),
+        "internet_connected": m0,
+        "internet_disconnected":
+            MessageLookupByLibrary.simpleMessage("Not Connected"),
+        "language_change_option":
+            MessageLookupByLibrary.simpleMessage("Change Language"),
+        "light_mode_option": MessageLookupByLibrary.simpleMessage("Light Mode"),
+        "loading_message": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "logout_action": MessageLookupByLibrary.simpleMessage("Logout"),
+        "logout_confirmation_message": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to log out?"),
+        "maintenance_notice": MessageLookupByLibrary.simpleMessage(
+            "Our servers are currently undergoing maintenance. Please try again later."),
+        "no_internet_message":
+            MessageLookupByLibrary.simpleMessage("No Internet Connection"),
+        "number_of_apples": m1,
+        "password_reset_request":
+            MessageLookupByLibrary.simpleMessage("Send Password Reset Link"),
+        "price_display": MessageLookupByLibrary.simpleMessage(
             "The price is {value, currency, ::currency/USD}"),
-        "title": MessageLookupByLibrary.simpleMessage("Localization Example"),
-        "welcome": m3
+        "proceed_button": MessageLookupByLibrary.simpleMessage("Continue"),
+        "rate_app_option": MessageLookupByLibrary.simpleMessage("Rate Us"),
+        "retry_action": MessageLookupByLibrary.simpleMessage("Retry"),
+        "return_greeting": MessageLookupByLibrary.simpleMessage("Welcome Back"),
+        "search_hint": MessageLookupByLibrary.simpleMessage("Search here..."),
+        "session_expiry_message":
+            MessageLookupByLibrary.simpleMessage("Session Expired"),
+        "status_checking":
+            MessageLookupByLibrary.simpleMessage("Checking status"),
+        "terms_option":
+            MessageLookupByLibrary.simpleMessage("Terms of Service"),
+        "update_available_message": MessageLookupByLibrary.simpleMessage(
+            "A new update is available. Please update the app."),
+        "user_greeting": m2,
+        "vpn_restriction":
+            MessageLookupByLibrary.simpleMessage("VPN Not Allowed"),
+        "welcome_message": m3
       };
 }

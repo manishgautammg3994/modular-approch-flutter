@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+
 
 /// Connectivity status
  enum NetworkConnectivityStatus {
@@ -12,4 +12,9 @@ import 'package:flutter/services.dart';
 
   /// Response as App Under Maintainace Mode
   appOver,
+
+  /// User Banned
+  userBanned
+
+
 }

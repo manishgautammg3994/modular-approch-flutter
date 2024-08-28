@@ -1,5 +1,6 @@
 import 'package:components/components.dart';
 import 'package:core/core.dart';
+import 'package:core/network/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:preferences/preferences.dart';
 import 'package:packages/packages.dart' ;
@@ -62,6 +63,7 @@ class _MyAppState extends State<MyApp> {
           }
           return MaterialApp(
             title: 'Flutter Demo',
+            // locale: Locale.fromSubtags(languageCode :"hi"),
             localizationsDelegates: const [
               AppLocalizations.delegate,
               ...GlobalMaterialLocalizations.delegates,
@@ -89,7 +91,7 @@ class _MyAppState extends State<MyApp> {
             builder: (context, child) {
               if (child != null) {
                 return SystemEventObserver(
-                  networkInfoFactory: NetworkInfoFactoryImpl(FlavorConfig()),
+                  networkInfoFactory: NetworkInfoImpl( ApiClient(FlavorConfig(),CacheManagerImpl(),Dio()), Connectivity()),
                   child: child,
                 );
               } else {

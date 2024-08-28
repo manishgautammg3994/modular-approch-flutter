@@ -11,3 +11,5 @@ abstract interface class UseCase<Type, Params> {
 final class NoParams {
   const NoParams();
 }
+
+//TODO Add Pagination

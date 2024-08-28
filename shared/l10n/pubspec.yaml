@@ -30,7 +30,7 @@ flutter_intl:
   class_name: AppLocalizations
 # The following section is specific to Flutter packages.
 flutter:
-  # generate: true
+  generate: true
 
 
   # To add assets to your package, add an assets section, like this:

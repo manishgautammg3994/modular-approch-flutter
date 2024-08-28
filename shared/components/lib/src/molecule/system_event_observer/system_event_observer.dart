@@ -6,7 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
-import 'package:core/core.dart' show AppLocalizationsX, NetworkInfoFactory, NetworkConnectivityStatus;
+import 'package:core/core.dart' show AppLocalizationsX, NetworkInfo,NetworkConnectivityStatus;
 
 import '../../atom/atom.dart' show BannerHost;
 
@@ -24,7 +24,7 @@ final class SystemEventObserver extends StatefulWidget {
 
   });
   final Widget child;
-  final NetworkInfoFactory networkInfoFactory;
+  final NetworkInfo networkInfoFactory;
 
   final void Function(AppLifecycleState)? lifeCycle;
   final void Function(Brightness)? onSystemBrightnessChange;
@@ -41,13 +41,14 @@ final class SystemEventObserver extends StatefulWidget {
 
 final class _SystemEventObserverState extends State<SystemEventObserver>
     with WidgetsBindingObserver {
-  late final _connectivity = _connectivityStream();
+  late final Stream<NetworkConnectivityStatus> _connectivity ;
   Stream<NetworkConnectivityStatus> _connectivityStream() async* {
     try {
-      final connectivity = widget.networkInfoFactory.createNetworkInfo();
+      final connectivity = widget.networkInfoFactory;
       final result = await connectivity.isConnected;
       yield result ;
       yield* connectivity.onStatusChange.distinct();
+
     } catch (e) {
       // Handle the error appropriately
       debugPrint('Connectivity error: $e');
@@ -58,7 +59,7 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
+    _connectivity = _connectivityStream();
     _checkSemantics();
 
   }
@@ -178,15 +179,13 @@ final class _SystemEventObserverState extends State<SystemEventObserver>
                       child: Text(
                         switch (result) {
                           NetworkConnectivityStatus.checking =>
-                          "checking internet connection",
+                          context.l10n.status_checking,
                           NetworkConnectivityStatus.offline =>
-                            context.l10n.notConnected,
+                            context.l10n.no_internet_message,
                           NetworkConnectivityStatus.appOver =>
-                          "App Under Maintainace Mode",
+                          context.l10n.app_maintenance,
 
-                          _ => context.l10n.connected("internet"
-                            // context.l10n.internet
-                            )
+                          _ => context.l10n.internet_connected("")
                         },
                         // (result != connection.ConnectivityResult.none)
                         //     ? context.l10n.connected(result.name.toString())

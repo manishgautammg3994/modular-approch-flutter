@@ -24,6 +24,10 @@ TODO: List prerequisites and provide or point to information on how to
 start using the package.
 
 ## Usage
+```bash
+flutter pub global activate intl_utils 
+flutter pub run intl_utils:generate
+```
 
 TODO: Include short and useful examples for package users. Add longer examples
 to `/example` folder.
