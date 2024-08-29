@@ -95,8 +95,10 @@ import 'network_info.dart';
     } on SocketException {
       await _connectivity.checkConnectivity().then((connectivityResult) async {
         if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-          await Future.delayed(const Duration(seconds: 5));
-          await _computedNetworkCheck();
+
+          Future.delayed(const Duration(seconds: 5),() async {await _computedNetworkCheck();});
+          // return
+
         }
       });
     }
