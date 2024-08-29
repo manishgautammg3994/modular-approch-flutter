@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
             builder: (context, child) {
               if (child != null) {
                 return SystemEventObserver(
-                  networkInfoFactory: NetworkInfoImpl( ApiClient(FlavorConfig(),CacheManagerImpl(),Dio()), Connectivity()),
+                  networkInfoFactory: NetworkInfoImpl( ApiServices(), Connectivity()),
                   child: child,
                 );
               } else {

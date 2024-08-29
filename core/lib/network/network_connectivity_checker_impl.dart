@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:packages/packages.dart';
 import 'package:flutter/foundation.dart';
 
+import '../services/services.dart';
 import 'api_client.dart';
 import 'network_connectivity_status.dart';
 import 'network_info.dart';
@@ -58,7 +59,7 @@ import 'network_info.dart';
  class NetworkInfoImpl implements NetworkInfo  {
  const NetworkInfoImpl( this._apiClient, this._connectivity);
 
- final ApiClient _apiClient;
+ final ApiServices _apiClient;
  final   Connectivity _connectivity;
 
 
@@ -76,7 +77,7 @@ import 'network_info.dart';
 
 
   Future<NetworkConnectivityStatus> _computedNetworkCheck() =>
-      compute(_performNetworkRequest, "${_apiClient.config.baseUrl}");
+      compute(_performNetworkRequest, "${_apiClient.flavorConfig.baseUrl}");
 
   Future<NetworkConnectivityStatus> _performNetworkRequest(String uri) async {
 
@@ -92,16 +93,17 @@ import 'network_info.dart';
           response.statusCode! <= 600) {
         return NetworkConnectivityStatus.appOver;
       }
-    } on SocketException {
-      await _connectivity.checkConnectivity().then((connectivityResult) async {
-        if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-
-          Future.delayed(const Duration(seconds: 5),() async {await _computedNetworkCheck();});
-          // return
-
-        }
-      });
     }
+    // on SocketException {
+    //   await _connectivity.checkConnectivity().then((connectivityResult) async {
+    //     if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
+    //
+    //       await Future.delayed(const Duration(seconds: 5));
+    //       // return
+    //         await _computedNetworkCheck();
+    //     }
+    //   });
+    // }
      catch (e) {
       debugPrint('Network Request Error checking connection: $e');
       //  add retry inspetor with dio on nointernet or say socket // if still that  then offline // but keep that running in background //TODO

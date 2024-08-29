@@ -11,7 +11,7 @@ export 'injector/injector.dart';
 export 'module/module.dart';
 //network
 export 'network/network.dart';
-
+export 'services/services.dart';
 export 'usecases/usecase.dart';
 export 'utils/utils.dart';
 
