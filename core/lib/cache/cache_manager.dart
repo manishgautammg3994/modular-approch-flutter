@@ -13,7 +13,7 @@ abstract interface class CacheManager {
   /// Retrieves a value associated with the [key].
   /// Returns the value cast to type [T].
   // Future<T?> read<T>(String key);
-  dynamic read(String key);
+  Future<T?>? read<T>(String key) ;
 
   /// Persists a key-value pair.
   /// Supports `List`, `Map`, `DateTime`, `BigInt`, and `Uint8List` as value types.
@@ -80,7 +80,7 @@ final class CacheManagerImpl implements CacheManager {
 
   @override
   // Future<T?> read<T>(String key)
-  dynamic read(String key)=> _box.isOpen ? _box.get(key) : null;
+  Future<T?>? read<T>(String key) => _box.isOpen ? _box.get(key) as Future<T?>? : null;
 
 
   @override

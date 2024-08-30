@@ -205,6 +205,7 @@ class ApiServices {
     this.flavorConfig = flavorConfig ?? FlavorConfig();
     this.connectivity = connectivity ?? Connectivity();
 
+
     _initializeInterceptors();
   }
 
@@ -212,14 +213,15 @@ class ApiServices {
     // Adding Authorization and other interceptors
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
+
         if (!options.path.startsWith('http')) {
           options.path = '${flavorConfig.baseUrl}${options.path}';
         }
 
-        final accessToken = await cacheManager.read(HiveKeys.accessToken);
-        if (accessToken != null) {
-          options.headers['Authorization'] = 'Bearer $accessToken';
-        }
+        // final accessToken = await cacheManager.read<String?>(HiveKeys.accessToken);
+        // if (accessToken != null) {
+        //   options.headers['Authorization'] = 'Bearer $accessToken';
+        // }
 
         return handler.next(options);
       },
