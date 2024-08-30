@@ -57,15 +57,17 @@ import 'network_info.dart';
 
 
  class NetworkInfoImpl implements NetworkInfo  {
- const NetworkInfoImpl( this._apiClient, this._connectivity);
+ const NetworkInfoImpl( this._apiClient,
+     // this._connectivity
+     );
 
  final ApiServices _apiClient;
- final   Connectivity _connectivity;
+ // final   Connectivity _connectivity;
 
 
   @override
   Stream<NetworkConnectivityStatus> get onStatusChange =>
-      _connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
+      _apiClient.connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
         if (connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none) {
           final networkResult = await _computedNetworkCheck();
           return networkResult;
@@ -77,7 +79,9 @@ import 'network_info.dart';
 
 
   Future<NetworkConnectivityStatus> _computedNetworkCheck() =>
-      compute(_performNetworkRequest, "${_apiClient.flavorConfig.baseUrl}");
+      compute(_performNetworkRequest, ""
+          // "/status/check"
+      );
 
   Future<NetworkConnectivityStatus> _performNetworkRequest(String uri) async {
 

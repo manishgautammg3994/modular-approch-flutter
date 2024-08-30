@@ -191,16 +191,19 @@ class ApiServices {
   late final Dio dio;
   late final CacheManager cacheManager;
   late final FlavorConfig flavorConfig;
+  late final Connectivity connectivity;
 
   ApiServices({
     Dio? dio,
     CacheManager? cacheManager,
     FlavorConfig? flavorConfig,
+    Connectivity? connectivity,
   }) {
     // Assign default values if not provided
     this.dio = dio ?? Dio();
     this.cacheManager = cacheManager ?? CacheManagerImpl();
     this.flavorConfig = flavorConfig ?? FlavorConfig();
+    this.connectivity = connectivity ?? Connectivity();
 
     _initializeInterceptors();
   }
@@ -237,7 +240,7 @@ class ApiServices {
     dio.interceptors.add(RetryOnConnectionChangeInterceptor(
       requestRetrier: DioConnectivityRequestRetrier(
         dio: dio,
-        connectivity: Connectivity(),
+        connectivity: connectivity,
       ),
     ));
   }
@@ -325,7 +328,7 @@ class DioConnectivityRequestRetrier {
 
     streamSubscription = connectivity.onConnectivityChanged.listen(
           (connectivityResult) {
-        if (connectivityResult.lastOrNull != ConnectivityResult.none) {
+        if (connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none) {
           final options = Options(
             method: requestOptions.method,
             headers: requestOptions.headers,
