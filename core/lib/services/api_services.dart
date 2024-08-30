@@ -213,7 +213,7 @@ class ApiServices {
           options.path = '${flavorConfig.baseUrl}${options.path}';
         }
 
-        final accessToken = await cacheManager.read<String>(HiveKeys.accessToken);
+        final accessToken = await cacheManager.read(HiveKeys.accessToken);
         if (accessToken != null) {
           options.headers['Authorization'] = 'Bearer $accessToken';
         }
@@ -223,7 +223,7 @@ class ApiServices {
       onError: (DioException error, ErrorInterceptorHandler handler) async {
         // Handle token expiration and retry with refreshed token
         if (error.response?.statusCode == 401 && error.response?.data['message'] == "Invalid JWT") {
-          final refreshToken = await cacheManager.read<String>(HiveKeys.refreshToken);
+          final refreshToken = await cacheManager.read(HiveKeys.refreshToken);
           if (refreshToken != null && await _refreshToken()) {
             return handler.resolve(await _retry(error.requestOptions));
           }
@@ -260,7 +260,7 @@ class ApiServices {
   }
 
   Future<bool> _refreshToken() async {
-    final refreshToken = await cacheManager.read<String>(HiveKeys.refreshToken);
+    final refreshToken = await cacheManager.read(HiveKeys.refreshToken);
     try {
       final response = await dio.post('/auth/refresh', data: {'refreshToken': refreshToken});
       if (response.statusCode == 201) {
