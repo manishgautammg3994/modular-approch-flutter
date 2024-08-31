@@ -99,13 +99,7 @@ import 'package:preferences/preferences.dart';
               return handler.resolve(await _retry(error.requestOptions));
             }
           }
-          if(_shouldRetry(error)){
-            await _connectivity.checkConnectivity().then((connectivityResult) async {
-              if(connectivityResult.isNotEmpty && connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-                return handler.resolve(await _retry(error.requestOptions));
-              }
-            });
-          }
+
           return handler.next(error);
         } ,),// ....
     ]); } catch(e) {
@@ -131,6 +125,15 @@ import 'package:preferences/preferences.dart';
           response.statusCode! <= 600) {
         return NetworkConnectivityStatus.appOver;
       }
+    }on SocketException {
+
+        await _connectivity.checkConnectivity().then((connectivityResult) async {
+          if(connectivityResult.isNotEmpty && connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
+          await  Future.delayed(const Duration(seconds: 5));
+            return await _computedNetworkCheck();
+          }
+        });
+
     }
      catch (e) {
       debugPrint('Network Request Error checking connection: $e');
