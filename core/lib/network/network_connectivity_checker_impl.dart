@@ -71,24 +71,20 @@ import 'network_info.dart';
 
 
   @override
-  Stream<NetworkConnectivityStatus> get onStatusChange {
-
-    return  _connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
-      print(connectivityResult.runtimeType); // Check the type here
-
-
-      if (
+  Stream<NetworkConnectivityStatus> get onStatusChange => _connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
+      if (connectivityResult.isNotEmpty && connectivityResult.lastOrNull != null &&
          connectivityResult.lastOrNull != ConnectivityResult.none) {
           final networkResult = await _computedNetworkCheck();
           return networkResult;
         } else {
           return NetworkConnectivityStatus.offline;
         }
-      });}
+      });
 
 
 
   Future<NetworkConnectivityStatus> _computedNetworkCheck() async{
+    try{
     final accessToken=await  cacheManager.read(HiveKeys.accessToken);
     final refreshToken=await  cacheManager.read(HiveKeys.refreshToken);
     dio.interceptors.addAll([
@@ -111,9 +107,9 @@ import 'network_info.dart';
           }
           if(_shouldRetry(error)){
             await _connectivity.checkConnectivity().then((connectivityResult) async {
-              if(connectivityResult.lastOrNull != ConnectivityResult.none){
+              if(connectivityResult.isNotEmpty && connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
 
-                await Future.delayed(const Duration(seconds: 5));
+
                 // return
                 return handler.resolve(await _retry(error.requestOptions));
                 //   await _computedNetworkCheck();
@@ -125,7 +121,11 @@ import 'network_info.dart';
           return handler.next(error);
 
         } ,)
-    ]);
+    ]); } catch(e) {
+ // if (kDebugMode) {
+ print(e);
+ // }
+ }
 
     return  compute(_performNetworkRequest, ""
           // "/status/check"

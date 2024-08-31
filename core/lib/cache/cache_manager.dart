@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../constants/constants.dart' show HiveKeys;
 import 'package:packages/packages.dart';
 import 'package:preferences/preferences.dart';
@@ -13,7 +15,7 @@ abstract interface class CacheManager {
   /// Retrieves a value associated with the [key].
   /// Returns the value cast to type [T].
   // Future<T?> read<T>(String key);
-  Future<T?>? read<T>(String key) ;
+  FutureOr<T?>? read<T>(String key) ;
 
   bool get isInited;
 
@@ -59,7 +61,7 @@ final class CacheManagerImpl implements CacheManager {
   }) async {
     config ??= FlavorConfig();
     if (_singleton == null) {
-    // await  Hive.initFlutter(); //here was the error use await
+    await  Hive.initFlutter(); //here was the error use await
 
       var encryptionKey = config.cacheEncryptKey.codeUnits;
       _box = await Hive.openBox(
@@ -82,7 +84,7 @@ final class CacheManagerImpl implements CacheManager {
 
   @override
   // Future<T?> read<T>(String key)
-  Future<T?>? read<T>(String key) => _box.isOpen ? _box.get(key) as Future<T?>? : null;
+  FutureOr<T?>? read<T>(String key) => _box.isOpen ? _box.get(key) as FutureOr<T?>? : null;
 
 
   @override

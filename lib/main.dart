@@ -2,11 +2,13 @@ import 'package:components/components.dart';
 import 'package:core/core.dart';
 import 'package:core/network/api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:preferences/preferences.dart';
 import 'package:packages/packages.dart' ;
 
 void main() {
   FlavorConfig config = FlavorConfig(appflavor: "staging");
+
   runApp(const MyApp());
 }
 
@@ -30,7 +32,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initializeHive() async {
-    await  Hive.initFlutter(); //here was the error use await
+
     /// always remmber to run [CacheManagerImpl.setup] at very first of program to initialize Local Storage in this case hive
     _cacheManager = await CacheManagerImpl.setup(
         // config:config
@@ -89,7 +91,7 @@ class _MyAppState extends State<MyApp> {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            builder: (context, child) {
+            builder: (context, child)  {
               if (child != null) {
                 return SystemEventObserver(
                   networkInfoFactory: NetworkInfoImpl(
