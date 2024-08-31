@@ -6,10 +6,8 @@ import 'package:packages/packages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:preferences/preferences.dart';
 
-import '../services/services.dart';
-import 'api_client.dart';
-import 'network_connectivity_status.dart';
-import 'network_info.dart';
+
+
 
 // class NetworkConnectivityCheckerImpl implements NetworkConnectivityChecker {
 //  const  NetworkConnectivityCheckerImpl( {
@@ -64,7 +62,7 @@ import 'network_info.dart';
      );
 
 
- final   Connectivity _connectivity;
+ final Connectivity _connectivity;
  final Dio dio;
  final CacheManager cacheManager;
  final FlavorConfig flavorConfig;
@@ -80,9 +78,6 @@ import 'network_info.dart';
           return NetworkConnectivityStatus.offline;
         }
       });
-
-
-
   Future<NetworkConnectivityStatus> _computedNetworkCheck() async{
     try{
     final accessToken=await  cacheManager.read(HiveKeys.accessToken);
@@ -100,7 +95,6 @@ import 'network_info.dart';
         onError: (DioException error, ErrorInterceptorHandler handler) async {
 
           if (error.response?.statusCode == 401 && error.response?.data['message'] == "Invalid JWT") {
-
             if (refreshToken != null && await _refreshToken(refreshToken)) {
               return handler.resolve(await _retry(error.requestOptions));
             }
@@ -108,30 +102,20 @@ import 'network_info.dart';
           if(_shouldRetry(error)){
             await _connectivity.checkConnectivity().then((connectivityResult) async {
               if(connectivityResult.isNotEmpty && connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-
-
-                // return
                 return handler.resolve(await _retry(error.requestOptions));
-                //   await _computedNetworkCheck();
               }
             });
-
           }
-
           return handler.next(error);
-
-        } ,)
+        } ,),// ....
     ]); } catch(e) {
  // if (kDebugMode) {
  print(e);
  // }
  }
-
     return  compute(_performNetworkRequest, ""
           // "/status/check"
       );}
-
-
 
   Future<NetworkConnectivityStatus> _performNetworkRequest(String uri) async {
 
@@ -148,20 +132,8 @@ import 'network_info.dart';
         return NetworkConnectivityStatus.appOver;
       }
     }
-    // on SocketException {
-    //   // await _connectivity.checkConnectivity().then((connectivityResult) async {
-    //   //   if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-    //   //
-    //   //     await Future.delayed(const Duration(seconds: 5));
-    //   //     // return
-    //   //       await _computedNetworkCheck();
-    //   //   }
-    //   // });
-    // }
      catch (e) {
       debugPrint('Network Request Error checking connection: $e');
-      //  add retry inspetor with dio on nointernet or say socket // if still that  then offline // but keep that running in background //TODO
-      // return _computedNetworkCheck();
     }
     return NetworkConnectivityStatus.offline;
   }
@@ -174,8 +146,6 @@ import 'network_info.dart';
  }
   @override
   Future<NetworkConnectivityStatus> get isConnected => _computedNetworkCheck();
-
-
 
  bool _shouldRetry(DioException err) {
    return err.type == DioExceptionType.connectionError &&

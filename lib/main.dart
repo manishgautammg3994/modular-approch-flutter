@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
         future: _hiveInitialization,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 20.0,)); //No Material // Initing Storage
+            return const Center(child: AntinnaActivityIndicator()); //No Material // Initing Storage
           }
 
           if (snapshot.hasError) {
