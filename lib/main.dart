@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
-  late final CacheManager _cacheManager;
+  late final CacheManagerImpl _cacheManager;
   late final Future<void> _hiveInitialization;
 
   @override
@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initializeHive() async {
+    await  Hive.initFlutter(); //here was the error use await
     /// always remmber to run [CacheManagerImpl.setup] at very first of program to initialize Local Storage in this case hive
     _cacheManager = await CacheManagerImpl.setup(
         // config:config
@@ -91,8 +92,8 @@ class _MyAppState extends State<MyApp> {
             builder: (context, child) {
               if (child != null) {
                 return SystemEventObserver(
-                  networkInfoFactory: NetworkInfoImpl( ApiServices(),
-                      // Connectivity()
+                  networkInfoFactory: NetworkInfoImpl(
+                      Connectivity(),Dio(),CacheManagerImpl(),FlavorConfig()
                   ),
                   child: child,
                 );

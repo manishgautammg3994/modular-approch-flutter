@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:packages/packages.dart';
 import 'package:flutter/foundation.dart';
+import 'package:preferences/preferences.dart';
 
 import '../services/services.dart';
 import 'api_client.dart';
@@ -57,36 +59,84 @@ import 'network_info.dart';
 
 
  class NetworkInfoImpl implements NetworkInfo  {
- const NetworkInfoImpl( this._apiClient,
-     // this._connectivity
+ const NetworkInfoImpl(
+     this._connectivity, this.dio, this.cacheManager, this.flavorConfig
      );
 
- final ApiServices _apiClient;
- // final   Connectivity _connectivity;
+
+ final   Connectivity _connectivity;
+ final Dio dio;
+ final CacheManager cacheManager;
+ final FlavorConfig flavorConfig;
 
 
   @override
-  Stream<NetworkConnectivityStatus> get onStatusChange =>
-      _apiClient.connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
-        if (connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none) {
+  Stream<NetworkConnectivityStatus> get onStatusChange {
+
+    return  _connectivity.onConnectivityChanged.asyncMap((connectivityResult) async {
+      print(connectivityResult.runtimeType); // Check the type here
+
+
+      if (
+         connectivityResult.lastOrNull != ConnectivityResult.none) {
           final networkResult = await _computedNetworkCheck();
           return networkResult;
         } else {
           return NetworkConnectivityStatus.offline;
         }
-      });
+      });}
 
 
 
-  Future<NetworkConnectivityStatus> _computedNetworkCheck() =>
-      compute(_performNetworkRequest, ""
+  Future<NetworkConnectivityStatus> _computedNetworkCheck() async{
+    final accessToken=await  cacheManager.read(HiveKeys.accessToken);
+    final refreshToken=await  cacheManager.read(HiveKeys.refreshToken);
+    dio.interceptors.addAll([
+      InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
+        if (!options.path.startsWith('http')) {
+          options.path = '${flavorConfig.baseUrl}${options.path}';
+        }
+        if (accessToken != null) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
+        }
+        return handler.next(options);
+      },
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
+
+          if (error.response?.statusCode == 401 && error.response?.data['message'] == "Invalid JWT") {
+
+            if (refreshToken != null && await _refreshToken(refreshToken)) {
+              return handler.resolve(await _retry(error.requestOptions));
+            }
+          }
+          if(_shouldRetry(error)){
+            await _connectivity.checkConnectivity().then((connectivityResult) async {
+              if(connectivityResult.lastOrNull != ConnectivityResult.none){
+
+                await Future.delayed(const Duration(seconds: 5));
+                // return
+                return handler.resolve(await _retry(error.requestOptions));
+                //   await _computedNetworkCheck();
+              }
+            });
+
+          }
+
+          return handler.next(error);
+
+        } ,)
+    ]);
+
+    return  compute(_performNetworkRequest, ""
           // "/status/check"
-      );
+      );}
+
+
 
   Future<NetworkConnectivityStatus> _performNetworkRequest(String uri) async {
 
     try {
-      final response = await _apiClient.dio.get(uri); //replace with Api Client
+      final response = await dio.get(uri); //replace with Api Client
       debugPrint(response.statusCode?.toString());
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
@@ -99,14 +149,14 @@ import 'network_info.dart';
       }
     }
     // on SocketException {
-    //   await _connectivity.checkConnectivity().then((connectivityResult) async {
-    //     if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
-    //
-    //       await Future.delayed(const Duration(seconds: 5));
-    //       // return
-    //         await _computedNetworkCheck();
-    //     }
-    //   });
+    //   // await _connectivity.checkConnectivity().then((connectivityResult) async {
+    //   //   if(connectivityResult.lastOrNull != null && connectivityResult.lastOrNull != ConnectivityResult.none){
+    //   //
+    //   //     await Future.delayed(const Duration(seconds: 5));
+    //   //     // return
+    //   //       await _computedNetworkCheck();
+    //   //   }
+    //   // });
     // }
      catch (e) {
       debugPrint('Network Request Error checking connection: $e');
@@ -116,7 +166,62 @@ import 'network_info.dart';
     return NetworkConnectivityStatus.offline;
   }
 
+  Future<void> writeNewAccessToken(String? accessToken)async {
+    await cacheManager.write(HiveKeys.accessToken, accessToken);
+  }
+ Future<void> writeNewRefreshToken(String? refreshToken)async {
+   await cacheManager.write(HiveKeys.refreshToken, refreshToken);
+ }
   @override
   Future<NetworkConnectivityStatus> get isConnected => _computedNetworkCheck();
+
+
+
+ bool _shouldRetry(DioException err) {
+   return err.type == DioExceptionType.connectionError &&
+       err.error != null &&
+       err.error is SocketException;
+ }
+
+ Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
+   final options = Options(
+     method: requestOptions.method,
+     headers: requestOptions.headers,
+     responseType: requestOptions.responseType,
+   );
+   return dio.request<dynamic>(
+     requestOptions.path,
+     data: requestOptions.data,
+     queryParameters: requestOptions.queryParameters,
+     options: options,
+     cancelToken: requestOptions.cancelToken,
+     onReceiveProgress: requestOptions.onReceiveProgress,
+     onSendProgress: requestOptions.onSendProgress,
+   );
+ }
+
+ Future<bool> _refreshToken(String? refreshToken) async {
+
+   try {
+     final response = await dio.post('/auth/refresh', data: {'refreshToken': refreshToken});
+     if (response.statusCode == 201) {
+       await writeNewAccessToken(response.data['accessToken']); //can't write this in isolate say compute as it is seperate from our ui isolate
+       await writeNewRefreshToken(response.data['refreshToken']); //can't write this in isolate say compute as it is seperate from our ui isolate
+
+       return true;
+     } else {
+       await _clearTokens();
+       return false;
+     }
+   } catch (e) {
+     await _clearTokens();
+     return false;
+   }
+ }
+
+ Future<void> _clearTokens() async {
+   await cacheManager.delete(HiveKeys.accessToken);
+   await cacheManager.delete(HiveKeys.refreshToken);
+ }
 }
 

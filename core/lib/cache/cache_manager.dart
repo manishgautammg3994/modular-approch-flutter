@@ -15,6 +15,8 @@ abstract interface class CacheManager {
   // Future<T?> read<T>(String key);
   Future<T?>? read<T>(String key) ;
 
+  bool get isInited;
+
   /// Persists a key-value pair.
   /// Supports `List`, `Map`, `DateTime`, `BigInt`, and `Uint8List` as value types.
   /// Other types may result in an error.
@@ -57,7 +59,7 @@ final class CacheManagerImpl implements CacheManager {
   }) async {
     config ??= FlavorConfig();
     if (_singleton == null) {
-    await  Hive.initFlutter(); //here was the error use await
+    // await  Hive.initFlutter(); //here was the error use await
 
       var encryptionKey = config.cacheEncryptKey.codeUnits;
       _box = await Hive.openBox(
@@ -95,6 +97,10 @@ final class CacheManagerImpl implements CacheManager {
 
   @override
   Future<void>? close() => _box.isOpen ? _box.close() : null;
+
+  @override
+  // TODO: implement isInited
+  bool get isInited => _singleton != null;
 
 
 
